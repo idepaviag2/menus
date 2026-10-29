@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menú</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Colores del negocio: se cambian aquí */
+  :root{
+    --fondo:#fbf7f0; --tarjeta:#ffffff; --texto:#1f1a14; --suave:#6f655a;
+    --acento:#c2410c; --linea:#ece4d8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--fondo);color:var(--texto);font-family:Inter,system-ui,sans-serif;line-height:1.45}
+  header{padding:40px 20px 24px;text-align:center}
+  header img{width:84px;height:84px;border-radius:50%;object-fit:cover;margin-bottom:12px;border:3px solid var(--tarjeta);box-shadow:0 2px 10px #0001}
+  h1{font-family:Fraunces,serif;font-weight:800;font-size:2.1rem;letter-spacing:-.02em}
+  .lema{color:var(--suave);margin-top:4px}
+  .datos{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  .datos a,.datos span{font-size:.85rem;padding:6px 12px;border-radius:99px;background:var(--tarjeta);border:1px solid var(--linea);color:var(--texto);text-decoration:none}
+  nav{position:sticky;top:0;z-index:5;background:var(--fondo);border-bottom:1px solid var(--linea);overflow-x:auto;white-space:nowrap;padding:10px 16px;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{display:inline-block;margin-right:6px;padding:7px 14px;border-radius:99px;font-size:.9rem;font-weight:500;color:var(--texto);text-decoration:none;border:1px solid var(--linea);background:var(--tarjeta)}
+  nav a.activo{background:var(--acento);border-color:var(--acento);color:#fff}
+  main{max-width:640px;margin:0 auto;padding:8px 16px 60px}
+  section{padding-top:28px;scroll-margin-top:60px}
+  h2{font-family:Fraunces,serif;font-weight:600;font-size:1.5rem;margin-bottom:12px}
+  .plato{display:flex;gap:14px;padding:14px;background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;margin-bottom:10px}
+  .plato img{width:84px;height:84px;border-radius:10px;object-fit:cover;flex:none}
+  .info{flex:1;min-width:0}
+  .fila{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .nombre{font-weight:600}
+  .precio{font-weight:600;color:var(--acento);white-space:nowrap}
+  .desc{color:var(--suave);font-size:.9rem;margin-top:3px}
+  .etiqueta{display:inline-block;font-size:.72rem;font-weight:600;margin-top:6px;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--acento) 12%,transparent);color:var(--acento)}
+  footer{text-align:center;color:var(--suave);font-size:.8rem;padding:24px 16px 40px}
+  .wa{position:fixed;right:16px;bottom:16px;background:#25d366;color:#fff;font-weight:600;text-decoration:none;padding:12px 18px;border-radius:99px;box-shadow:0 4px 14px #0003}
+</style>
+</head>
+<body>
+<header id="encabezado"></header>
+<nav id="nav"></nav>
+<main id="menu"></main>
+<footer id="pie"></footer>
+
+<script>
+// ===== Datos del negocio: lo único que se cambia por cliente =====
+const NEGOCIO = {
+  "nombre": "Misión Santa Isabel",
+  "lema": "Así se vería tu menú digital",
+  "logo": "",
+  "whatsapp": "",
+  "direccion": "",
+  "horario": "",
+  "nota": "Muestra con platos y precios de ejemplo. Tu menú lleva tus platos, fotos y precios reales.",
+  "secciones": [
+    {
+      "titulo": "Entradas",
+      "platos": [
+        {
+          "nombre": "Guacamole",
+          "precio": 90,
+          "desc": "Con totopos de la casa"
+        },
+        {
+          "nombre": "Sopa del día",
+          "precio": 75
+        }
+      ]
+    },
+    {
+      "titulo": "Platos fuertes",
+      "platos": [
+        {
+          "nombre": "Enchiladas",
+          "precio": 140,
+          "desc": "Verdes o rojas, con pollo",
+          "etiqueta": "El favorito"
+        },
+        {
+          "nombre": "Tacos de la casa",
+          "precio": 120,
+          "desc": "Orden de cuatro"
+        }
+      ]
+    },
+    {
+      "titulo": "Bebidas",
+      "platos": [
+        {
+          "nombre": "Agua fresca",
+          "precio": 35,
+          "desc": "Del día"
+        },
+        {
+          "nombre": "Refresco",
+          "precio": 30
+        }
+      ]
+    }
+  ]
+};
+// =================================================================
+
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const id = t => t.toLowerCase().normalize("NFD").replace(/[^\w]+/g, "-");
+const pesos = n => "$" + Number(n).toLocaleString("es-MX");
+
+document.title = NEGOCIO.nombre + " · Menú";
+$("#encabezado").innerHTML = `
+  ${NEGOCIO.logo ? `<img src="${esc(NEGOCIO.logo)}" alt="">` : ""}
+  <h1>${esc(NEGOCIO.nombre)}</h1>
+  ${NEGOCIO.lema ? `<p class="lema">${esc(NEGOCIO.lema)}</p>` : ""}
+  <div class="datos">
+    ${NEGOCIO.horario ? `<span>${esc(NEGOCIO.horario)}</span>` : ""}
+    ${NEGOCIO.direccion ? `<a href="https://maps.google.com/?q=${encodeURIComponent(NEGOCIO.direccion)}" target="_blank">📍 Cómo llegar</a>` : ""}
+  </div>`;
+$("#nav").innerHTML = NEGOCIO.secciones.map(s => `<a href="#${id(s.titulo)}">${esc(s.titulo)}</a>`).join("");
+$("#menu").innerHTML = NEGOCIO.secciones.map(s => `
+  <section id="${id(s.titulo)}">
+    <h2>${esc(s.titulo)}</h2>
+    ${s.platos.map(p => `
+      <div class="plato">
+        ${p.foto ? `<img src="${esc(p.foto)}" alt="" loading="lazy">` : ""}
+        <div class="info">
+          <div class="fila"><span class="nombre">${esc(p.nombre)}</span><span class="precio">${pesos(p.precio)}</span></div>
+          ${p.desc ? `<p class="desc">${esc(p.desc)}</p>` : ""}
+          ${p.etiqueta ? `<span class="etiqueta">${esc(p.etiqueta)}</span>` : ""}
+        </div>
+      </div>`).join("")}
+  </section>`).join("");
+$("#pie").textContent = NEGOCIO.nota;
+if (NEGOCIO.whatsapp) document.body.insertAdjacentHTML("beforeend",
+  `<a class="wa" href="https://wa.me/${NEGOCIO.whatsapp}" target="_blank">Pedir por WhatsApp</a>`);
+
+// resalta la sección visible en la barra
+const links = [...document.querySelectorAll("nav a")];
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) links.forEach(l => l.classList.toggle("activo", l.hash === "#" + e.target.id));
+}), { rootMargin: "-40% 0px -55% 0px" });
+document.querySelectorAll("section").forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
